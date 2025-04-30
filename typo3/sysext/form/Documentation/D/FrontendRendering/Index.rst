@@ -213,6 +213,7 @@ Implement a ``FormFactory`` and build the form::
    declare(strict_types = 1);
    namespace VENDOR\MySitePackage\Domain\Factory;
 
+   use Psr\Http\Message\ServerRequestInterface;
    use TYPO3\CMS\Core\Utility\GeneralUtility;
    use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
    use TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator;
@@ -230,9 +231,14 @@ Implement a ``FormFactory`` and build the form::
         *
         * @param array $configuration
         * @param string $prototypeName
+        * @param ServerRequestInterface|null $request
         * @return FormDefinition
         */
-       public function build(array $configuration, string $prototypeName = null): FormDefinition
+       public function build(
+            array $configuration, 
+            string $prototypeName = null,
+            ServerRequestInterface|null $request = null
+            ): FormDefinition
        {
            $prototypeName = 'standard';
            $configurationService = GeneralUtility::makeInstance(ConfigurationService::class);
@@ -270,12 +276,18 @@ Implement a ``FormFactory`` and build the form::
        }
    }
 
+In your Configuration/Services.yaml add
+
+.. code-block:: php
+
+  VENDOR\MySitePackage\Domain\Factory\CustomFormFactory:
+    public: true
+
 Use this form within your fluid template.
 
 .. code-block:: html
 
    <formvh:render factoryClass="VENDOR\MySitePackage\Domain\Factory\CustomFormFactory" />
-
 
 .. _apireference-frontendrendering-programmatically-commonapimethods:
 
